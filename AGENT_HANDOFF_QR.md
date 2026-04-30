@@ -41,3 +41,6 @@ Do **NOT** regenerate the QR codes if a URL changes. Instead, update the corresp
 - **Color Inversion & Logos**: The background color is now solid Dark Green (`#2c4d43`) or Terracotta (`#cd6b48`), and the QR data pixels are Dankley Cream (`#fcf3da`). The central logo uses the inverse color 'D' sitting on a circular solid cream mask.
 - **Dynamic Consultation Routing**: The `Consultation` QR code logic was updated to point to the dynamic Vercel route (`https://dankley-queensqr.vercel.app/consultation`) instead of hardcoding `dankley.com`. A new `consultation/index.html` file was created to handle the redirection.
 - **Git Tracking Rules**: The Python generator scripts and original logo images are explicitly excluded from Git commits. Only the generated PNGs in qr assets/ and the routing HTML files should be staged and pushed to Vercel.
+
+### V3 Update: Queens Store Endpoint Correction (Append-Only Ledger)
+- **Store Redirection Update**: The root Vercel `index.html` was updated to point directly to `https://dankley.com/queens-store/` (the Queens Village specific landing page) rather than the generic `/store/` route. Physical QR codes do not require regeneration.
