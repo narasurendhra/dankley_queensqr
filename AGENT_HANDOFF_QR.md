@@ -80,4 +80,9 @@ Do **NOT** regenerate the QR codes if a URL changes. Instead, update the corresp
   - Automatically exports `.svg` versions of all 10 QR codes into the respective category folders in `qr assets/` alongside the PNGs.
 
 
+### V8 Update: Events Redirection Target URL Updated (Append-Only Ledger)
+- **Events Redirection Destination Update**: Changed the redirect destination in `events/index.html` from the Jadakiss event page to the new Eventbrite tickets page for the "Dankleys 710 on 711" event: `https://www.eventbrite.com/e/dankleys-710-on-711-tickets-1992293029081?aff=oddtdtcreator`.
+
+
+
 
