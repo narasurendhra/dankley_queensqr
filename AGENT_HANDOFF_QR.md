@@ -90,6 +90,12 @@ Do **NOT** regenerate the QR codes if a URL changes. Instead, update the corresp
 - **Asset Regeneration**: Regenerated all 10 `.svg` files in the `qr assets/` subfolders.
 
 
+### V10 Update: Mask Circle Radius Reduced to Remove Thin Ring (Append-Only Ledger)
+- **Mask Circle Radius Reduction**: Changed the white background circle radius in the SVG `<mask>` from `266.23` to `255`. This keeps the circle edge inside the black region of `PATH1` (radius 266.23), completely eliminating subpixel anti-aliasing artifacts (the thin outer circle) from rendering around the center 'D' logo.
+- **Asset Regeneration**: Regenerated all 10 `.svg` files in the `qr assets/` subfolders.
+
+
+
 
 
 

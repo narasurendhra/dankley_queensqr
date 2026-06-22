@@ -218,7 +218,7 @@ def generate_qr_svg(url, filename, fill_color, back_color, d_color):
     svg_parts.append('    </radialGradient>')
     
     svg_parts.append('    <mask id="d-logo-mask">')
-    svg_parts.append('      <circle cx="266.23" cy="266.23" r="266.23" fill="#ffffff" />')
+    svg_parts.append('      <circle cx="266.23" cy="266.23" r="255" fill="#ffffff" />')
     svg_parts.append(f'      <path d="{PATH1}" fill="#000000" />')
     svg_parts.append(f'      <path d="{PATH2}" fill="#000000" />')
     svg_parts.append('    </mask>')
