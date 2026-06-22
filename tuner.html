@@ -508,7 +508,7 @@
                    `logo_size = int(1290 * ${circleScale.toFixed(2)})  # Circle scale (${Math.round(circleScale*100)}%)\n` +
                    `d_size = int(1290 * ${logoScale.toFixed(2)})     # D Logo scale (${Math.round(logoScale*100)}%)\n\n` +
                    `# 2. Update gradient solid core radius inside generate_qr.py:\n` +
-                   `inner_r = logo_size * ${innerCoreScale.toFixed(2)}    # Solid core (${Math.round(innerCoreScale*100)}% of circle radius)\n` +
+                   `inner_r = logo_size * 0.5 * ${innerCoreScale.toFixed(2)}  # Solid core (${Math.round(innerCoreScale*100)}% of circle radius)\n` +
                    `outer_r = logo_size * 0.5\n\n` +
                    `# 3. Update radialGradient stop offsets inside generate_qr_svg:\n` +
                    `# Inside generate_qr_svg() defs (defs section):\n` +

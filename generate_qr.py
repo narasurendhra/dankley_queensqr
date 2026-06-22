@@ -105,7 +105,7 @@ def generate_qr(url, filename, fill_color, back_color, logo_file, d_color):
         # 3. Create the radial gradient mask for the Cream background circle (fading at edges)
         gradient_mask = Image.new("L", (logo_size, logo_size), 0)
         cx, cy = logo_size / 2.0, logo_size / 2.0
-        inner_r = logo_size * 0.40  # Solid interior core
+        inner_r = logo_size * 0.5 * 0.40  # Solid interior core (40% of radius)
         outer_r = logo_size * 0.5
         for y in range(logo_size):
             for x in range(logo_size):
