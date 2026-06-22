@@ -115,8 +115,6 @@ Do **NOT** regenerate the QR codes if a URL changes. Instead, update the corresp
 - **Home QR Generation**: Configured `generate_qr.py` with `HOME_URL = "https://dankley-queensqr.vercel.app/home"` and output directory `qr assets/queens_home`.
 - **Asset Regeneration**: Generated both PNG and SVG formats under `qr assets/queens_home` and copied them to Google Drive.
 
-
-
-
-
-
+### V15 Update: Verification & Sync of Home Redirection to /queens/ (Append-Only Ledger)
+- **Live Redirection Verified**: Successfully confirmed that requests to the live Vercel route `https://dankley-queensqr.vercel.app/home` serve the updated redirect headers targeting `https://dankley.com/queens/`.
+- **Google Drive Synchronization**: Regenerated all QR code files locally and copied the completed suite of PNG and SVG assets for all endpoints (including the newly confirmed `queens_home` redirection) to Google Drive.
