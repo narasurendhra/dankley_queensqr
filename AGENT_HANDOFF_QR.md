@@ -105,6 +105,11 @@ Do **NOT** regenerate the QR codes if a URL changes. Instead, update the corresp
 - **Asset Regeneration**: Regenerated all 10 PNGs and 10 SVGs and copied them to Google Drive.
 
 
+### V13 Update: Final Tuner Configuration Applied (Append-Only Ledger)
+- **Final Tuner Parameters**: Applied the final user-approved parameters from the tuner screenshot: circle scale `60%`, D logo scale `50%`, and solid core `40%`. This renders the D logo significantly larger and more readable, with a wider solid Cream core gradient backing it.
+- **Asset Regeneration**: Regenerated all 10 PNGs and 10 SVGs and copied them to Google Drive.
+
+
 
 
 
