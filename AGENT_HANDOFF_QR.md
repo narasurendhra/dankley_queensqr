@@ -95,6 +95,11 @@ Do **NOT** regenerate the QR codes if a URL changes. Instead, update the corresp
 - **Asset Regeneration**: Regenerated all 10 `.svg` files in the `qr assets/` subfolders.
 
 
+### V11 Update: QR Code Tuner Tool Added (Append-Only Ledger)
+- **Tuner Tool (tuner.html)**: Created a premium, standalone HTML5 Canvas interactive tool (`tuner.html`) that allows real-time tuning of the fading Cream circle gradient (solid core and outer radius) and "D" logo scale.
+- **Git Tracking**: Added `tuner.html` to the repository, allowing it to be deployed on Vercel (accessible at `/tuner.html`).
+
+
 
 
 

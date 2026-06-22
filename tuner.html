@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dankley QR Gradient Tuner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #12141c;
+      --panel-bg: #1a1d28;
+      --accent: #cd6b48;
+      --accent-green: #2c4d43;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --cream: #fcf3da;
+      --border: #2d3142;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #fff 30%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      width: 100%;
+      max-width: 1200px;
+      background-color: var(--panel-bg);
+      border-radius: 24px;
+      padding: 2.5rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .preview-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .canvas-container {
+      position: relative;
+      background-color: #0f111a;
+      padding: 1.5rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    canvas {
+      display: block;
+      border-radius: 8px;
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .control-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .theme-selector {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .theme-btn {
+      flex: 1;
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background-color: #0f111a;
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .theme-btn.active {
+      border-color: var(--accent);
+      background-color: rgba(205, 107, 72, 0.1);
+    }
+
+    .theme-btn.active.green {
+      border-color: #52a890;
+      background-color: rgba(44, 77, 67, 0.2);
+    }
+
+    .color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .control-label {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .control-value {
+      font-family: monospace;
+      font-size: 0.95rem;
+      color: var(--accent);
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      outline: none;
+      transition: background 450ms ease-in-out;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(205, 107, 72, 0.5);
+      transition: transform 0.1s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .code-box {
+      background-color: #0f111a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      position: relative;
+      margin-top: 1rem;
+    }
+
+    .code-header {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .code-content {
+      color: #34d399;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background-color: var(--panel-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background-color: var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Dankley QR Gradient Tuner</h1>
+    <p class="subtitle">Visually adjust the fading Cream circle background and logo scale in real time.</p>
+  </header>
+
+  <div class="container">
+    <div class="preview-panel">
+      <div class="canvas-container">
+        <canvas id="qrCanvas" width="900" height="900"></canvas>
+      </div>
+    </div>
+
+    <div class="control-panel">
+      <div class="control-group">
+        <span class="control-label">Color Theme</span>
+        <div class="theme-selector">
+          <button class="theme-btn active" id="btnTerracotta" onclick="setTheme('Terracotta')">
+            <span class="color-dot" style="background-color: #cd6b48;"></span> Terracotta
+          </button>
+          <button class="theme-btn" id="btnGreen" onclick="setTheme('Dark_Green')">
+            <span class="color-dot" style="background-color: #2c4d43;"></span> Dark Green
+          </button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-label">Cream Circle Scale (Outer Radius)</span>
+          <span class="control-value" id="valCircleScale">45%</span>
+        </div>
+        <input type="range" id="slideCircleScale" min="20" max="60" value="45" oninput="updateValues()">
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-label">Solid Core Radius</span>
+          <span class="control-value" id="valInnerCore">14%</span>
+        </div>
+        <input type="range" id="slideInnerCore" min="0" max="40" value="14" oninput="updateValues()">
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-label">D Logo Scale</span>
+          <span class="control-value" id="valLogoScale">35%</span>
+        </div>
+        <input type="range" id="slideLogoScale" min="20" max="50" value="35" oninput="updateValues()">
+      </div>
+
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyCode()">Copy Parameters</button>
+        <div class="code-header">Python Config Variables</div>
+        <div class="code-content" id="codeOutput"># Parameters loaded...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // QR Code Matrix (Version 7, Events URL, error correction H)
+    const qrMatrix = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,1,1,1,1,1,1,1,0,0,1,1,1,0,1,0,1,1,1,1,1,1,1,0,1,0,0,0,0,1,0,1,1,1,1,1,1,1,0,0,0,0],[0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,1,1,0,1,1,0,1,0,1,0,0,0,0,0,1,0,0,0,0],[0,0,0,0,1,0,1,1,1,0,1,0,0,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,0,1,1,0,0,0,1,0,1,1,1,0,1,0,0,0,0],[0,0,0,0,1,0,1,1,1,0,1,0,0,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,0,0,1,0,1,1,1,0,1,0,0,0,0],[0,0,0,0,1,0,1,1,1,0,1,0,1,0,1,0,0,1,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,0,1,0,1,1,1,0,1,0,0,0,0],[0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,1,1,1,1,1,0,1,0,0,1,0,0,1,1,1,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0],[0,0,0,0,1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,1,1,0,1,1,0,1,1,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,1,1,0,0,1,1,1,0,1,0,1,0,0,0,0,0,1,1,1,1,1,0,1,0,1,1,0,1,1,0,1,0,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,1,1,0,0,1,0,1,0,0,0,1,1,0,1,1,0,1,0,1,0,1,0,0,0,0,0],[0,0,0,0,1,1,1,1,1,1,1,0,0,1,1,0,1,1,0,0,0,1,1,0,0,0,1,1,0,1,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,1,0,1,1,0,1,1,1,0,0,1,0,0,0,1,1,0,1,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,0,0,0,0],[0,0,0,0,0,1,1,1,1,1,1,0,0,1,0,1,0,0,0,0,1,0,1,1,1,1,0,0,1,1,1,0,0,1,1,1,1,0,1,0,1,0,0,0,0],[0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,1,0,1,1,0,1,0,0,1,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,0,0,0],[0,0,0,0,0,1,0,0,1,1,1,0,1,0,0,0,0,1,0,0,0,1,1,1,1,0,1,0,0,1,1,0,1,0,1,1,1,0,1,1,0,0,0,0,0],[0,0,0,0,1,0,1,0,0,0,0,1,1,0,0,0,1,0,1,0,1,0,1,0,0,0,0,1,1,0,1,0,0,1,1,1,1,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,1,1,1,0,1,1,0,0,1,0,1,1,1,1,0,1,1,1,0,1,0,1,0,1,0,0,1,1,0,1,0,1,1,0,1,0,0,0,0],[0,0,0,0,0,1,0,1,1,1,0,1,0,1,0,0,1,0,1,1,0,0,0,1,1,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0],[0,0,0,0,0,0,0,1,0,1,1,1,1,1,0,1,1,1,1,0,0,1,0,1,0,0,1,1,1,0,1,1,1,1,1,1,0,0,1,1,1,0,0,0,0],[0,0,0,0,0,1,1,1,0,1,0,1,1,0,0,0,0,0,0,0,0,1,1,1,0,1,0,0,1,0,0,0,0,1,1,1,1,1,0,1,1,0,0,0,0],[0,0,0,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0,1,1,0,0,1,0,0,1,1,0,1,0,1,0,1,1,0,0,1,0,0,0,1,0,0,0,0],[0,0,0,0,1,1,0,1,0,1,0,0,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0],[0,0,0,0,1,0,0,0,0,0,1,1,1,0,1,0,0,1,0,1,1,0,0,1,0,0,1,1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0],[0,0,0,0,1,0,0,0,0,0,0,1,1,0,1,1,0,1,1,0,1,1,1,1,1,1,1,0,0,1,1,1,1,0,1,0,0,1,1,1,0,0,0,0,0],[0,0,0,0,0,0,0,1,1,1,1,0,1,0,1,1,1,1,1,1,1,0,1,0,1,1,1,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,0,0,0],[0,0,0,0,0,1,0,1,0,1,0,0,0,1,1,1,1,1,0,1,0,1,1,0,1,1,1,1,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0],[0,0,0,0,0,1,0,1,0,0,1,0,1,0,1,1,0,0,0,0,0,1,0,0,0,0,1,0,1,1,1,0,0,0,0,0,1,0,1,1,0,0,0,0,0],[0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,1,0,0,1,1,1,0,0,0,1,0,1,0,1,0,0,1,1,1,0,1,1,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,1,1,1,1,1,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,1,0,0,1,1,1,1,1,0,1,0,1,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,1,1,0,1,1,0,0,0,1,1,1,0,1,0,0,0,0],[0,0,0,0,1,1,1,1,1,1,1,0,1,0,0,1,1,1,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,1,0,1,1,0,1,1,0,0,0,0],[0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,1,0,1,1,1,0,1,1,0,1,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0],[0,0,0,0,1,0,1,1,1,0,1,0,0,1,1,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0],[0,0,0,0,1,0,1,1,1,0,1,0,1,1,0,1,0,1,0,1,1,1,1,0,1,0,1,0,0,1,0,0,0,0,1,0,1,0,1,0,0,0,0,0,0],[0,0,0,0,1,0,1,1,1,0,1,0,1,0,0,0,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,1,0,0,1,0,0,0,0,0],[0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,1,0,1,0,1,1,1,1,0,1,0,1,1,1,1,1,1,0,0,0,0,0,0],[0,0,0,0,1,1,1,1,1,1,1,0,0,1,0,0,1,0,0,0,1,0,1,0,0,1,1,1,1,1,0,0,0,1,1,0,0,1,1,1,1,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+
+    const colors = {
+      "Terracotta": {
+        "back_color": "#cd6b48",
+        "d_color": "#2c4d43"
+      },
+      "Dark_Green": {
+        "back_color": "#2c4d43",
+        "d_color": "#cd6b48"
+      }
+    };
+
+    let activeTheme = 'Terracotta';
+    const canvas = document.getElementById('qrCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // SVG Path Constants for "D" Logo
+    const PATH1 = "M266.23,0C119.2,0,0,119.2,0,266.23s119.2,266.23,266.23,266.23,266.23-119.2,266.23-266.23S413.27,0,266.23,0ZM375.68,398.18c-54.78,47.67-134.3,59.52-198.52,23.26-28.01-15.82-49.84-50.26-53.01-82.09-.92-9.25,6.13-16.67,10.74-23.97,5.5-8.7,10.8-17.51,15.83-26.49,10.04-17.94,18.96-36.56,25.88-55.94,4.77-13.36,10.36-28.93,9.99-43.41-.23-8.69-7.7-10.21-15.87-7.27-9.31,3.36-18.94,5.66-28.8,5.89-16.07.36-32.98-5.6-42.53-18.52-5.97-8.08-8.68-18.5-7.4-28.46,2.47-19.2,19.02-33.61,37.85-35.79,7.83-.91,15.87.24,23.18,3.16,2.36.94,5.6,2.47,6.49,5.03.4,1.15.23,2.53-.59,3.42-2.34,2.51-6.7.64-9.43.06-1.61-.34-3.26-.52-4.91-.5-5.79.1-12.78,3.3-12.5,10,.11,2.7,1.48,5.34,3.67,6.93,3.45,2.49,8.54,2.62,12.63,2.17,4.01-.44,7.89-1.62,11.71-2.9,3.02-1.01,6.03-2.08,9.01-3.22,37.69-14.39,72.85-31.93,114.29-31.77,41.84.16,82.67,14.59,112.7,44.27,4.65,4.59,8.96,9.47,12.93,14.59,19.58,25.29,30.72,56.52,32.07,88.65,2.38,56.77-22.47,115.55-65.39,152.9Z";
+    const PATH2 = "M335.38,163.72c-30.48-16.92-67.83-19.79-100.51-7.98-4.05,1.46-8.02,3.14-11.93,4.94l-5.99,2.85c-.07.03-.14.07-.21.1-.2.19-.8.42-1.22.6-.1.05-.2.1-.3.15-2.73,1.62-.57,4.94,1.63,4.09.02,0,3.4-.67,3.42-.67,27.51-3.27,33.53,17.58,25.23,38.97-12.2,30.3-24.78,60.36-37.65,90.39-6.56,15.3-14.98,32.19-11.47,49.36,11.94,58.3,93.43,45.89,129.16,21.42,39.3-26.92,63.17-81.23,58.47-128.71-3.05-30.83-21.22-60.3-48.64-75.52Z";
+
+    function setTheme(themeName) {
+      activeTheme = themeName;
+      document.getElementById('btnTerracotta').classList.toggle('active', themeName === 'Terracotta');
+      document.getElementById('btnGreen').classList.toggle('active', themeName === 'Dark_Green');
+      
+      // Update accent color variables dynamically for thumb styling
+      const root = document.documentElement;
+      if (themeName === 'Terracotta') {
+        root.style.setProperty('--accent', '#cd6b48');
+      } else {
+        root.style.setProperty('--accent', '#52a890');
+      }
+      
+      drawQR();
+    }
+
+    function isEye(y, x, size) {
+      return (
+        (y < 7 && x < 7)
+        || (y < 7 && size - x < 8)
+        || (size - y < 8 && x < 7)
+      );
+    }
+
+    function drawRoundRectPath(ctx, x, y, w, h, rNW, rNE, rSE, rSW) {
+      ctx.beginPath();
+      ctx.moveTo(x + w/2, y);
+      ctx.lineTo(x + w - rNE, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + rNE);
+      ctx.lineTo(x + w, y + h - rSE);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - rSE, y + h);
+      ctx.lineTo(x + rSW, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - rSW);
+      ctx.lineTo(x, y + rNW);
+      ctx.quadraticCurveTo(x, y, x + rNW, y);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function drawQR() {
+      const circleScale = document.getElementById('slideCircleScale').value / 100;
+      const innerCoreScale = document.getElementById('slideInnerCore').value / 100;
+      const logoScale = document.getElementById('slideLogoScale').value / 100;
+
+      const theme = colors[activeTheme];
+      const width = qrMatrix.length;
+      
+      // Clear canvas
+      ctx.fillStyle = theme.back_color;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw Modules
+      const margin = 2; // matches border=2 in Python
+      const totalModules = width; // 45 modules
+      const size = canvas.width / totalModules;
+      
+      ctx.fillStyle = varColor('cream');
+      
+      for (let y = 0; y < totalModules; y++) {
+        for (let x = 0; x < totalModules; x++) {
+          if (qrMatrix[y][x] === 1) {
+            if (isEye(y, x, totalModules)) {
+              // Sharp corner eye
+              ctx.fillRect(x * size, y * size, size, size);
+            } else {
+              // Merging rounded modules
+              const N = (y > 0) ? qrMatrix[y - 1][x] === 1 : false;
+              const S = (y < totalModules - 1) ? qrMatrix[y + 1][x] === 1 : false;
+              const E = (x < totalModules - 1) ? qrMatrix[y][x + 1] === 1 : false;
+              const W = (x > 0) ? qrMatrix[y][x - 1] === 1 : false;
+              
+              const radius = size * 0.5;
+              const rNW = (!N && !W) ? radius : 0;
+              const rNE = (!N && !E) ? radius : 0;
+              const rSE = (!S && !E) ? radius : 0;
+              const rSW = (!S && !W) ? radius : 0;
+              
+              drawRoundRectPath(ctx, x * size, y * size, size, size, rNW, rNE, rSE, rSW);
+            }
+          }
+        }
+      }
+
+      // Draw Fading Circle Background
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const qrWidthModules = totalModules - 4; // width minus border
+      const logoSizePixels = qrWidthModules * size * circleScale;
+      
+      const outerR = logoSizePixels / 2;
+      const innerR = outerR * innerCoreScale;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+      
+      const grad = ctx.createRadialGradient(cx, cy, innerR, cx, cy, outerR);
+      grad.addColorStop(0, '#fcf3da');
+      grad.addColorStop(1, 'rgba(252, 243, 218, 0)');
+      
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Draw Logo
+      const dSizePixels = qrWidthModules * size * logoScale;
+      const scaleFactor = dSizePixels / 532.46;
+      
+      const tx = cx - dSizePixels / 2;
+      const ty = cy - dSizePixels / 2;
+
+      // 1. Draw solid cream hollow inside of D
+      ctx.save();
+      ctx.translate(tx, ty);
+      ctx.scale(scaleFactor, scaleFactor);
+      
+      const path2 = new Path2D(PATH2);
+      ctx.fillStyle = '#fcf3da';
+      ctx.fill(path2);
+      ctx.restore();
+
+      // 2. Draw solid D using mask composition
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = dSizePixels * 1.5;
+      tempCanvas.height = dSizePixels * 1.5;
+      const tempCtx = tempCanvas.getContext('2d');
+      
+      const tcX = tempCanvas.width / 2;
+      const tcY = tempCanvas.height / 2;
+      
+      // Draw white base circle (radius 255 scaled)
+      tempCtx.fillStyle = '#ffffff';
+      tempCtx.beginPath();
+      // Translate to center and draw
+      tempCtx.arc(tcX, tcY, 255 * scaleFactor, 0, Math.PI * 2);
+      tempCtx.fill();
+      
+      // Subtract PATH1 and PATH2
+      tempCtx.globalCompositeOperation = 'destination-out';
+      tempCtx.translate(tcX - dSizePixels / 2, tcY - dSizePixels / 2);
+      tempCtx.scale(scaleFactor, scaleFactor);
+      
+      const path1 = new Path2D(PATH1);
+      tempCtx.fillStyle = '#000000';
+      tempCtx.fill(path1);
+      tempCtx.fill(path2);
+      
+      // Fill the solid color
+      tempCtx.globalCompositeOperation = 'source-in';
+      tempCtx.fillStyle = theme.d_color;
+      tempCtx.fillRect(-100, -100, tempCanvas.width / scaleFactor + 200, tempCanvas.height / scaleFactor + 200);
+      
+      // Draw onto main canvas
+      ctx.drawImage(tempCanvas, cx - tempCanvas.width / 2, cy - tempCanvas.height / 2);
+
+      updateCodeBox(circleScale, innerCoreScale, logoScale);
+    }
+
+    function varColor(name) {
+      return activeTheme === 'Terracotta' ? '#fcf3da' : '#fcf3da';
+    }
+
+    function updateValues() {
+      const circleScale = document.getElementById('slideCircleScale').value;
+      const innerCore = document.getElementById('slideInnerCore').value;
+      const logoScale = document.getElementById('slideLogoScale').value;
+
+      document.getElementById('valCircleScale').innerText = circleScale + '%';
+      document.getElementById('valInnerCore').innerText = innerCore + '%';
+      document.getElementById('valLogoScale').innerText = logoScale + '%';
+
+      drawQR();
+    }
+
+    function updateCodeBox(circleScale, innerCoreScale, logoScale) {
+      // Calculate corresponding inner_r ratio relative to circle size
+      // Solid core ratio = innerCoreScale (slider value)
+      const code = `# 1. Update logo scale configuration inside generate_qr.py:\n` +
+                   `logo_size = int(1290 * ${circleScale.toFixed(2)})  # Circle scale (${Math.round(circleScale*100)}%)\n` +
+                   `d_size = int(1290 * ${logoScale.toFixed(2)})     # D Logo scale (${Math.round(logoScale*100)}%)\n\n` +
+                   `# 2. Update gradient solid core radius inside generate_qr.py:\n` +
+                   `inner_r = logo_size * ${innerCoreScale.toFixed(2)}    # Solid core (${Math.round(innerCoreScale*100)}% of circle radius)\n` +
+                   `outer_r = logo_size * 0.5\n\n` +
+                   `# 3. Update radialGradient stop offsets inside generate_qr_svg:\n` +
+                   `# Inside generate_qr_svg() defs (defs section):\n` +
+                   `svg_parts.append('    <radialGradient id=\"cream-fade\" cx=\"50%\" cy=\"50%\" r=\"50%\">')\n` +
+                   `svg_parts.append('      <stop offset=\"0%\" stop-color=\"#fcf3da\" stop-opacity=\"1\" />')\n` +
+                   `svg_parts.append('      <stop offset=\"${Math.round(innerCoreScale * 100)}%\" stop-color=\"#fcf3da\" stop-opacity=\"1\" />')\n` +
+                   `svg_parts.append('      <stop offset=\"100%\" stop-color=\"#fcf3da\" stop-opacity=\"0\" />')\n` +
+                   `svg_parts.append('    </radialGradient>')`;
+      
+      document.getElementById('codeOutput').innerText = code;
+    }
+
+    function copyCode() {
+      const codeText = document.getElementById('codeOutput').innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.innerText = 'Copied!';
+        btn.style.backgroundColor = '#10b981';
+        btn.style.borderColor = '#10b981';
+        setTimeout(() => {
+          btn.innerText = 'Copy Parameters';
+          btn.style.backgroundColor = 'var(--panel-bg)';
+          btn.style.borderColor = 'var(--border)';
+        }, 1500);
+      });
+    }
+
+    // Initial Render
+    updateValues();
+  </script>
+</body>
+</html>
