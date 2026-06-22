@@ -100,6 +100,11 @@ Do **NOT** regenerate the QR codes if a URL changes. Instead, update the corresp
 - **Git Tracking**: Added `tuner.html` to the repository, allowing it to be deployed on Vercel (accessible at `/tuner.html`).
 
 
+### V12 Update: Visual Tuning to Match Canvas Aesthetic (Append-Only Ledger)
+- **Visual Parameters Adjusted**: Refactored `generate_qr.py` to match the canvas aesthetic: circle scale `45%`, logo scale `35%`, and solid core `0%` (which starts the fading cream gradient immediately from the center of the logo).
+- **Asset Regeneration**: Regenerated all 10 PNGs and 10 SVGs and copied them to Google Drive.
+
+
 
 
 

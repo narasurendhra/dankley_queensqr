@@ -69,8 +69,8 @@ def generate_qr(url, filename, fill_color, back_color, logo_file, d_color):
     img = img.resize((1290, 1290), Image.Resampling.NEAREST)
 
     if os.path.exists(logo_file):
-        # Outer circle canvas size (60% of QR size)
-        logo_size = int(1290 * 0.60)
+        # Outer circle canvas size (45% of QR size)
+        logo_size = int(1290 * 0.45)
         # D logo shape size (keeps readability at 35% of QR size)
         d_size = int(1290 * 0.35)
         
@@ -105,7 +105,7 @@ def generate_qr(url, filename, fill_color, back_color, logo_file, d_color):
         # 3. Create the radial gradient mask for the Cream background circle (fading at edges)
         gradient_mask = Image.new("L", (logo_size, logo_size), 0)
         cx, cy = logo_size / 2.0, logo_size / 2.0
-        inner_r = logo_size * 0.33  # Solid interior core
+        inner_r = 0  # Fade starts immediately from center
         outer_r = logo_size * 0.5
         for y in range(logo_size):
             for x in range(logo_size):
@@ -213,7 +213,7 @@ def generate_qr_svg(url, filename, fill_color, back_color, d_color):
     svg_parts.append('  <defs>')
     svg_parts.append('    <radialGradient id="cream-fade" cx="50%" cy="50%" r="50%">')
     svg_parts.append('      <stop offset="0%" stop-color="#fcf3da" stop-opacity="1" />')
-    svg_parts.append('      <stop offset="33%" stop-color="#fcf3da" stop-opacity="1" />')
+    svg_parts.append('      <stop offset="0%" stop-color="#fcf3da" stop-opacity="1" />')
     svg_parts.append('      <stop offset="100%" stop-color="#fcf3da" stop-opacity="0" />')
     svg_parts.append('    </radialGradient>')
     
@@ -242,8 +242,8 @@ def generate_qr_svg(url, filename, fill_color, back_color, d_color):
                     
     svg_parts.append(f'  <path d="{" ".join(paths)}" fill="{fill_color}" />')
     
-    # Logo Group (Decoupled circle size: 60% circle, 35% D)
-    circle_scale = 0.60
+    # Logo Group (Decoupled circle size: 45% circle, 35% D)
+    circle_scale = 0.45
     d_scale = 0.35
     qr_width_modules = width - 4
     logo_size_modules = qr_width_modules * circle_scale
