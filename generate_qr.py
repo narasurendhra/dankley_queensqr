@@ -12,6 +12,7 @@ EVENTS_URL = "https://dankley-queensqr.vercel.app/events"
 CONSULTATION_URL = "https://dankley-queensqr.vercel.app/consultation"
 DIRECTIONS_URL = "https://dankley-queensqr.vercel.app/directions"
 HOME_URL = "https://dankley-queensqr.vercel.app/home"
+MAIN_URL = "https://dankley-queensqr.vercel.app/main"
 
 # Brand Colors & Logos
 CREAM_COLOR = "#fcf3da"
@@ -41,7 +42,8 @@ OUTPUT_DIRS = {
     "fidi": "qr assets/fidi_store",
     "consultation": "qr assets/queens_consultation",
     "directions": "qr assets/queens_directions",
-    "home": "qr assets/queens_home"
+    "home": "qr assets/queens_home",
+    "main": "qr assets/dankley_main"
 }
 
 def hex_to_rgb(hex_color):
@@ -325,6 +327,13 @@ def main():
         generate_qr(HOME_URL, filename_png, palette["fill_color"], palette["back_color"], palette["logo_file"], palette["d_color"])
         filename_svg = os.path.join(OUTPUT_DIRS["home"], f"QUEENS_HOME_QR_{color_name}.svg")
         generate_qr_svg(HOME_URL, filename_svg, palette["fill_color"], palette["back_color"], palette["d_color"])
+
+    print("\n--- Generating Main Website QR Codes ---")
+    for color_name, palette in COLORS.items():
+        filename_png = os.path.join(OUTPUT_DIRS["main"], f"DANKLEY_MAIN_QR_{color_name}.png")
+        generate_qr(MAIN_URL, filename_png, palette["fill_color"], palette["back_color"], palette["logo_file"], palette["d_color"])
+        filename_svg = os.path.join(OUTPUT_DIRS["main"], f"DANKLEY_MAIN_QR_{color_name}.svg")
+        generate_qr_svg(MAIN_URL, filename_svg, palette["fill_color"], palette["back_color"], palette["d_color"])
 
     print("\nAll premium QR codes successfully generated in the 'qr assets' folder!")
 
