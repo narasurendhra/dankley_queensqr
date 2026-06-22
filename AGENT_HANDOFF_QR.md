@@ -84,5 +84,12 @@ Do **NOT** regenerate the QR codes if a URL changes. Instead, update the corresp
 - **Events Redirection Destination Update**: Changed the redirect destination in `events/index.html` from the Jadakiss event page to the new Eventbrite tickets page for the "Dankleys 710 on 711" event: `https://www.eventbrite.com/e/dankleys-710-on-711-tickets-1992293029081?aff=oddtdtcreator`.
 
 
+### V9 Update: Vector SVG Module Merging & Sharp Eyes (Append-Only Ledger)
+- **Module Merging Logic**: Refactored `generate_qr_svg` to dynamically check the four neighbors (North, South, East, West) of each active data module and draw custom merging SVG paths with a corner radius of `r = 0.5`. This causes adjacent modules to merge seamlessly into continuous rounded shapes, matching Pillow's `RoundedModuleDrawer` behavior.
+- **Finder Patterns (Eyes)**: Configured the finder patterns to remain sharp, solid squares by mapping modules using an `is_eye` coordinate check and drawing them as standard `1x1` square paths.
+- **Asset Regeneration**: Regenerated all 10 `.svg` files in the `qr assets/` subfolders.
+
+
+
 
 

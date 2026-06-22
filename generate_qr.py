@@ -139,6 +139,52 @@ def generate_qr(url, filename, fill_color, back_color, logo_file, d_color):
     img.save(filename, "PNG")
     print(f"Generated Inverted Color QR: {filename}")
 
+def is_eye(y, x, width, height):
+    """Checks if a module coordinate is within one of the three corner finder patterns (eyes)."""
+    return (
+        (y < 7 and x < 7)
+        or (y < 7 and width - x < 8)
+        or (height - y < 8 and x < 7)
+    )
+
+def get_module_path(x, y, N, S, E, W, r=0.5):
+    """Generates the SVG path for a single module with rounded corners merging with neighbors."""
+    nw_rounded = not N and not W
+    ne_rounded = not N and not E
+    se_rounded = not S and not E
+    sw_rounded = not S and not W
+
+    path_parts = []
+    # Start at top center of the module
+    path_parts.append(f"M {x + 0.5:.4f} {y:.4f}")
+
+    # Top-right corner (NE)
+    if ne_rounded:
+        path_parts.append(f"Q {x + 1:.4f} {y:.4f} {x + 1:.4f} {y + 0.5:.4f}")
+    else:
+        path_parts.append(f"L {x + 1:.4f} {y:.4f} L {x + 1:.4f} {y + 0.5:.4f}")
+
+    # Bottom-right corner (SE)
+    if se_rounded:
+        path_parts.append(f"Q {x + 1:.4f} {y + 1:.4f} {x + 0.5:.4f} {y + 1:.4f}")
+    else:
+        path_parts.append(f"L {x + 1:.4f} {y + 1:.4f} L {x + 0.5:.4f} {y + 1:.4f}")
+
+    # Bottom-left corner (SW)
+    if sw_rounded:
+        path_parts.append(f"Q {x:.4f} {y + 1:.4f} {x:.4f} {y + 0.5:.4f}")
+    else:
+        path_parts.append(f"L {x:.4f} {y + 1:.4f} L {x:.4f} {y + 0.5:.4f}")
+
+    # Top-left corner (NW)
+    if nw_rounded:
+        path_parts.append(f"Q {x:.4f} {y:.4f} {x + 0.5:.4f} {y:.4f}")
+    else:
+        path_parts.append(f"L {x:.4f} {y:.4f} L {x + 0.5:.4f} {y:.4f}")
+
+    path_parts.append("Z")
+    return "".join(path_parts)
+
 def generate_qr_svg(url, filename, fill_color, back_color, d_color):
     """Generates a high-res vector SVG QR code with correct colors and embedded vector logo."""
     # 1. Generate QR Code matrix
@@ -179,12 +225,22 @@ def generate_qr_svg(url, filename, fill_color, back_color, d_color):
     svg_parts.append('  </defs>')
     
     # Modules
-    svg_parts.append('  <g>')
+    paths = []
     for y in range(height):
         for x in range(width):
             if matrix[y][x]:
-                svg_parts.append(f'    <rect x="{x}" y="{y}" width="1" height="1" rx="0.38" ry="0.38" fill="{fill_color}" />')
-    svg_parts.append('  </g>')
+                if is_eye(y, x, width, height):
+                    # Eye module (sharp square)
+                    paths.append(f"M {x} {y} h 1 v 1 h -1 Z")
+                else:
+                    # Data module (round corners merging with neighbors)
+                    N = matrix[y - 1][x] if y > 0 else False
+                    S = matrix[y + 1][x] if y < height - 1 else False
+                    E = matrix[y][x + 1] if x < width - 1 else False
+                    W = matrix[y][x - 1] if x > 0 else False
+                    paths.append(get_module_path(x, y, N, S, E, W, r=0.5))
+                    
+    svg_parts.append(f'  <path d="{" ".join(paths)}" fill="{fill_color}" />')
     
     # Logo Group (Decoupled circle size: 45% circle, 35% D)
     circle_scale = 0.45
