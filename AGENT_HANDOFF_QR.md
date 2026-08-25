@@ -123,3 +123,7 @@ Do **NOT** regenerate the QR codes if a URL changes. Instead, update the corresp
 - **Main Website Redirect Route**: Created the `/main` endpoint on Vercel (`main/index.html`) to redirect users directly to `https://dankley.com/`.
 - **QR Code Config**: Added `MAIN_URL = "https://dankley-queensqr.vercel.app/main"` and output directory `qr assets/dankley_main` to `generate_qr.py`.
 - **Asset Generation & Google Drive Sync**: Generated both Terracotta and Dark Green versions in PNG and SVG formats under `qr assets/dankley_main/` and synchronized them to the Google Drive folder (`G:\Shared drives\Dankley Queens\Dankley Logos Art\QR Code\dankley_main`).
+
+### V17 Update: Events Redirection Target URL Updated (Append-Only Ledger)
+- **Events Redirection Destination Update**: Changed the redirect destination in `events/index.html` to the new Eventbrite tickets page: `https://www.eventbrite.com/e/1998451944563?aff=oddtdtcreator`. Dynamic QR codes pointing to `https://dankley-queensqr.vercel.app/events` now seamlessly forward users to this new event.
+
